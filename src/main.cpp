@@ -32,6 +32,8 @@ class LimitedCCMenu : public CCMenu {
 
 			CCRect rect = {startPointX, startPointY, scrollSize.width, scrollSize.height};
 
+			m_scrollLayer->CCScrollLayerExt::ccTouchBegan(touch, event);
+
 			if (rect.containsPoint(touch->getLocation())) {
 				return CCMenu::ccTouchBegan(touch, event);
 			}
@@ -196,7 +198,6 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 		m_fields->m_scrollLayer->ignoreAnchorPointForPosition(false);
 		m_fields->m_scrollLayer->m_contentLayer->addChild(menuContainer);
 		m_fields->m_scrollLayer->setID("groups-list-menu-scroll"_spr);
-
 		groupsMenu->m_scrollLayer = m_fields->m_scrollLayer;
 
 		m_mainLayer->addChild(m_fields->m_scrollLayer);
