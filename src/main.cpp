@@ -240,7 +240,7 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 
 		handleTouchPriority(this);
 
-		if (auto delegate = typeinfo_cast<CCTouchDelegate*>(m_fields->m_scrollLayer)) {
+		if (auto delegate = typeinfo_cast<CCTouchDelegate*>(m_fields->m_scrollLayer.data())) {
 			if (auto handler = CCTouchDispatcher::get()->findHandler(delegate)) {
 				CCTouchDispatcher::get()->setPriority(handler->getPriority()-1, handler->getDelegate());
 			}
