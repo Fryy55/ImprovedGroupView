@@ -1,6 +1,9 @@
 # 1.0.3
 - Fix android crash
 
+# 1.0.3
+- ~~Fix android crash~~
+
 # 1.0.2
 - Polished scroll jumping a bit
 

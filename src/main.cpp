@@ -87,6 +87,14 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 		regenerateGroupView();
 	}
 
+	#ifdef GEODE_IS_ANDROID
+
+	void callRemoveFromGroup(float p0) {
+
+	}
+
+	#endif
+
 	void regenerateGroupView() {
 		if (m_fields->m_scrollLayer) m_fields->m_scrollLayer->removeFromParent();
 
