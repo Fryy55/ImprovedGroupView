@@ -192,7 +192,16 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 			m_fields->m_scrollLayer->scrollToTop();
 		}
 		else {
-			m_fields->m_scrollLayer->m_contentLayer->setPositionY(m_fields->m_scrollPos);
+			float minY = -(m_fields->m_scrollLayer->m_contentLayer->getContentSize().height - m_fields->m_scrollLayer->getContentSize().height);
+			float pos = m_fields->m_scrollPos;
+
+			log::info("minY: {}", minY);
+			log::info("posY: {}", m_fields->m_scrollPos);
+
+			if (m_fields->m_scrollPos < minY) pos = minY;
+			if (m_fields->m_scrollPos > 0) pos = 0;
+
+			m_fields->m_scrollLayer->m_contentLayer->setPositionY(pos);
 		}
 
 		if (groupsMenu->getChildrenCount() <= 14) {
