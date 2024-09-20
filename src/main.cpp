@@ -32,10 +32,11 @@ class LimitedCCMenu : public CCMenu {
 
 			CCRect rect = {startPointX, startPointY, scrollSize.width, scrollSize.height};
 
-			m_scrollLayer->CCScrollLayerExt::ccTouchBegan(touch, event);
 
 			if (rect.containsPoint(touch->getLocation())) {
-				return CCMenu::ccTouchBegan(touch, event);
+				auto ret = CCMenu::ccTouchBegan(touch, event);
+				m_scrollLayer->CCScrollLayerExt::ccTouchBegan(touch, event);
+				return ret;
 			}
 		}
 		else {
