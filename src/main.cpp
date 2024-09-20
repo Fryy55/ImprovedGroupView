@@ -71,7 +71,7 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 		return true;
 	}
 
-	void onRemoveFromGroup(CCObject* obj) {
+	void onRemoveFromGroup2(CCObject* obj) {
 		m_fields->m_lastRemoved = obj->getTag();
 		SetGroupIDLayer::onRemoveFromGroup(obj);
 		regenerateGroupView();
@@ -146,7 +146,7 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 
 			ButtonSprite* bspr = ButtonSprite::create(fmt::format("{}", k).c_str(), 30, true, "goldFont.fnt", texture.c_str(), 20, 0.5);
 
-			CCMenuItemSpriteExtra* button = CCMenuItemSpriteExtra::create(bspr, this, menu_selector(SetGroupIDLayer::onRemoveFromGroup));
+			CCMenuItemSpriteExtra* button = CCMenuItemSpriteExtra::create(bspr, this, menu_selector(MySetGroupIDLayer::onRemoveFromGroup2));
 			
 			button->setTag(k);
 			
