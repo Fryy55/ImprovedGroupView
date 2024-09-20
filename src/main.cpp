@@ -67,6 +67,18 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 			node->setVisible(false);
 		}
 
+		if (CCNode* node = m_mainLayer->getChildByID("add-group-id-buttons-menu")) {
+			
+			if (CCMenuItemSpriteExtra* idBtn = typeinfo_cast<CCMenuItemSpriteExtra*>(node->getChildByID("add-group-id-button"))) {
+				idBtn->m_pfnSelector = menu_selector(MySetGroupIDLayer::onAddGroup2);
+			}
+
+			if (CCMenuItemSpriteExtra* parentBtn = typeinfo_cast<CCMenuItemSpriteExtra*>(node->getChildByID("add-group-parent-button"))) {
+				parentBtn->m_pfnSelector = menu_selector(MySetGroupIDLayer::onAddGroupParent2);
+			}
+		}
+
+
 		regenerateGroupView();
 		return true;
 	}
@@ -77,23 +89,15 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 		regenerateGroupView();
 	}
 
-	void onAddGroup(CCObject* obj) {
+	void onAddGroup2(CCObject* obj) {
 		SetGroupIDLayer::onAddGroup(obj);
 		regenerateGroupView();
 	}
 
-	void onAddGroupParent(CCObject* obj) {
+	void onAddGroupParent2(CCObject* obj) {
 		SetGroupIDLayer::onAddGroupParent(obj);
 		regenerateGroupView();
 	}
-
-	#ifdef GEODE_IS_ANDROID
-
-	void callRemoveFromGroup(float p0) {
-
-	}
-
-	#endif
 
 	void regenerateGroupView() {
 		if (m_fields->m_scrollLayer) m_fields->m_scrollLayer->removeFromParent();
