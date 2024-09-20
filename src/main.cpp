@@ -4,6 +4,45 @@
 
 using namespace geode::prelude;
 
+class LimitedCCMenu : public CCMenu {
+
+	public:
+
+	geode::ScrollLayer* m_scrollLayer;
+
+	static LimitedCCMenu* create() {
+		auto ret = new LimitedCCMenu();
+		if (ret->init()) {
+			ret->autorelease();
+			return ret;
+		}
+
+		delete ret;
+		return nullptr;
+	}
+
+	bool ccTouchBegan(CCTouch* touch, CCEvent* event) override {
+
+		if (m_scrollLayer) {
+			CCSize scrollSize = m_scrollLayer->getScaledContentSize();
+			CCPoint anchorPoint = m_scrollLayer->getAnchorPoint();
+
+			float startPointX = m_scrollLayer->getPositionX() - scrollSize.width * anchorPoint.x;
+			float startPointY = m_scrollLayer->getPositionY() - scrollSize.height * anchorPoint.y;
+
+			CCRect rect = {startPointX, startPointY, scrollSize.width, scrollSize.height};
+
+			if (rect.containsPoint(touch->getLocation())) {
+				return CCMenu::ccTouchBegan(touch, event);
+			}
+		}
+		else {
+			return CCMenu::ccTouchBegan(touch, event);
+		}
+		return false;
+	}
+};
+
 class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 
 	struct GroupData {
@@ -84,7 +123,7 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 		}
 
 		CCNode* menuContainer = CCNode::create();
-		CCMenu* groupsMenu = CCMenu::create();
+		LimitedCCMenu* groupsMenu = LimitedCCMenu::create();
 
 		RowLayout* layout = RowLayout::create();
 		layout->setGap(12);
@@ -145,6 +184,8 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 		m_fields->m_scrollLayer->ignoreAnchorPointForPosition(false);
 		m_fields->m_scrollLayer->m_contentLayer->addChild(menuContainer);
 		m_fields->m_scrollLayer->setID("groups-list-menu-scroll"_spr);
+
+		groupsMenu->m_scrollLayer = m_fields->m_scrollLayer;
 
 		m_mainLayer->addChild(m_fields->m_scrollLayer);
 		if (m_fields->m_scrollPos == INT_MIN) {
