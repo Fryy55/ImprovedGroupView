@@ -32,11 +32,8 @@ class LimitedCCMenu : public CCMenu {
 
 			CCRect rect = {startPointX, startPointY, scrollSize.width, scrollSize.height};
 
-
 			if (rect.containsPoint(touch->getLocation())) {
-				auto ret = CCMenu::ccTouchBegan(touch, event);
-				m_scrollLayer->CCScrollLayerExt::ccTouchBegan(touch, event);
-				return ret;
+				return CCMenu::ccTouchBegan(touch, event);
 			}
 		}
 		else {
@@ -242,6 +239,12 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 		m_mainLayer->addChild(groupCountLabel);
 
 		handleTouchPriority(this);
+
+		if (auto delegate = typeinfo_cast<CCTouchDelegate*>(m_fields->m_scrollLayer)) {
+			if (auto handler = CCTouchDispatcher::get()->findHandler(delegate)) {
+				CCTouchDispatcher::get()->setPriority(handler->getPriority()-1, handler->getDelegate());
+			}
+		}
 	}
 
 	GroupData parseObjGroups(GameObject* obj) {
