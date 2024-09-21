@@ -142,6 +142,9 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 		layout->setAutoScale(false);
 		layout->setGrowCrossAxis(true);
 		layout->setCrossAxisOverflow(true);
+		if (Mod::get()->getSettingValue<bool>("left-align")) {
+			layout->setAxisAlignment(AxisAlignment::Start);
+		}
 
 		groupsMenu->setLayout(layout);
 
@@ -168,11 +171,11 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 
 		if (groupsMenu->getChildrenCount() <= 10) {
 			groupsMenu->setScale(1.f);
-			contentSize = CCSize{290, 50};
+			contentSize = CCSize{278, 50};
 		}
 		else {
 			groupsMenu->setScale(0.85f);
-			contentSize = CCSize{400, 50};
+			contentSize = CCSize{395, 50};
 		}
 
 		float padding = 7.5;

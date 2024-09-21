@@ -6,12 +6,12 @@
 	},
 	"id": "alphalaneous.improved_group_view",
 	"name": "Improved Group View",
-	"version": "v1.0.4",
+	"version": "v1.0.5",
 	"developer": "Alphalaneous",
 	"description": "Allows more than 20 groups to show in the groups menu!",
 	"links": {
         "homepage": "https://twitter.com/alphalaneous",
-        "source": "https://github.com/Alphalaneous/HappyTextures",
+        "source": "https://github.com/Alphalaneous/ImprovedGroupView",
         "community": "https://discord.gg/Txn2CA5dHF"
     },
 	"dependencies": [
@@ -20,5 +20,13 @@
             "version": ">=v1.14.0",
             "importance": "required"
         }
-    ]
+    ],
+	"settings": {
+		"left-align": {
+            "name": "Left Align Groups",
+			"description": "Align groups to the left like vanilla GD",
+            "type": "bool",
+            "default": false
+        }
+	}
 }

@@ -1,3 +1,6 @@
+# 1.0.5
+- Add left alignment
+
 # 1.0.4
 - Fix android crash
 
