@@ -64,7 +64,15 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 		}
 
 		if (CCNode* node = m_mainLayer->getChildByID("groups-list-menu")) {
-			node->setVisible(false);
+			for (CCNode* child : CCArrayExt<CCNode*>(node->getChildren())) {
+				child->setVisible(false);
+			}
+			if (CCNode* btn = node->getChildByID("z-layer-decrement-button")) {
+				btn->setVisible(true);
+			}
+			if (CCNode* btn = node->getChildByID("z-layer-increment-button")) {
+				btn->setVisible(true);
+			}
 		}
 
 		if (CCNode* node = m_mainLayer->getChildByID("add-group-id-buttons-menu")) {
@@ -208,9 +216,6 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 		else {
 			float minY = -(m_fields->m_scrollLayer->m_contentLayer->getContentSize().height - m_fields->m_scrollLayer->getContentSize().height);
 			float pos = m_fields->m_scrollPos;
-
-			log::info("minY: {}", minY);
-			log::info("posY: {}", m_fields->m_scrollPos);
 
 			if (m_fields->m_scrollPos < minY) pos = minY;
 			if (m_fields->m_scrollPos > 0) pos = 0;

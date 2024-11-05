@@ -1,3 +1,7 @@
+# 1.0.6
+- Remove unneeded logs
+- Fix missing z in/de-cremenet buttons
+
 # 1.0.5
 - Add left alignment
 
