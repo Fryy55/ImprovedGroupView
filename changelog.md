@@ -1,3 +1,6 @@
+# 1.0.7
+- FIx overlapping groups
+
 # 1.0.6
 - Remove unneeded logs
 - Fix missing z in/de-cremenet buttons

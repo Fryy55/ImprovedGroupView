@@ -64,14 +64,26 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 		}
 
 		if (CCNode* node = m_mainLayer->getChildByID("groups-list-menu")) {
-			for (CCNode* child : CCArrayExt<CCNode*>(node->getChildren())) {
-				child->setVisible(false);
-			}
+
+			CCMenu* replacementMenu = CCMenu::create();
+			replacementMenu->setPosition(node->getPosition());
+			replacementMenu->setContentSize(node->getContentSize());
+			replacementMenu->setScaleX(node->getScaleX());
+			replacementMenu->setScaleY(node->getScaleY());
+			replacementMenu->setAnchorPoint(node->getAnchorPoint());
+			replacementMenu->setID("z-layer-menu"_spr);
+
+			m_mainLayer->addChild(replacementMenu);
+
+			node->setVisible(false);
+			
 			if (CCNode* btn = node->getChildByID("z-layer-decrement-button")) {
-				btn->setVisible(true);
+				btn->removeFromParentAndCleanup(false);
+				replacementMenu->addChild(btn);
 			}
 			if (CCNode* btn = node->getChildByID("z-layer-increment-button")) {
-				btn->setVisible(true);
+				btn->removeFromParentAndCleanup(false);
+				replacementMenu->addChild(btn);
 			}
 		}
 
