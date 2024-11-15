@@ -296,7 +296,7 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 	static MySetGroupIDLayer* get() {
 
 		CCScene* scene = CCDirector::get()->getRunningScene();
-		return static_cast<MySetGroupIDLayer*>(getChildOfType<SetGroupIDLayer>(scene, 0));
+		return static_cast<MySetGroupIDLayer*>(scene->getChildByType<SetGroupIDLayer>(0));
 	}
 
 	void setButtonsEnabled(bool enabled) {
