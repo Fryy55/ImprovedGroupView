@@ -1,5 +1,5 @@
 {
-	"geode": "4.0.0-beta.1",
+	"geode": "4.0.1",
 	"gd": {
 		"win": "2.2074",
 		"android": "2.2074",
@@ -7,7 +7,7 @@
 	},
 	"id": "alphalaneous.improved_group_view",
 	"name": "Improved Group View",
-	"version": "v1.0.8",
+	"version": "v1.0.9",
 	"developer": "Alphalaneous",
 	"description": "Allows more than 20 groups to show in the groups menu!",
 	"links": {

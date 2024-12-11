@@ -1,3 +1,6 @@
+# 1.0.9
+- Android32 Support
+
 # 1.0.7
 - FIx overlapping groups
 
