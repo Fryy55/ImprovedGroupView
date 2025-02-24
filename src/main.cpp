@@ -1,6 +1,9 @@
 #include <Geode/Geode.hpp>
 #include <Geode/modify/SetGroupIDLayer.hpp>
 #include <Geode/modify/CCScrollLayerExt.hpp>
+#include <Geode/modify/SetupRandAdvTriggerPopup.hpp>
+#include <Geode/modify/SetupSequenceTriggerPopup.hpp>
+#include <Geode/modify/SetupSpawnPopup.hpp>
 
 using namespace geode::prelude;
 
@@ -42,6 +45,102 @@ class LimitedCCMenu : public CCMenu {
 		return false;
 	}
 };
+
+/*class $modify(SetupRandAdvTriggerPopup) {
+
+    bool init(RandTriggerGameObject* p0, cocos2d::CCArray* p1) {
+		if (!SetupRandAdvTriggerPopup::init(p0, p1)) return false;
+
+		return true;
+	}
+
+};
+
+class $modify(SetupSequenceTriggerPopup) {
+
+    bool init(SequenceTriggerGameObject* p0) {
+		if (!SetupSequenceTriggerPopup::init(p0)) return false;
+
+		return true;
+	}
+	
+};
+
+
+class $modify(SetupSpawnPopup) {
+
+	struct Fields {
+		CCMenu* m_remapGroupsMenu;
+	};
+
+    bool init(EffectGameObject* p0, cocos2d::CCArray* p1) {
+
+		m_fields->m_remapGroupsMenu = CCMenu::create();
+
+		if (!SetupSpawnPopup::init(p0, p1)) return false;
+
+		
+		m_fields->m_remapGroupsMenu->setID("remap-groups-menu"_spr);
+		m_fields->m_remapGroupsMenu->setContentSize({340, 85});
+
+		RowLayout* layout = RowLayout::create();
+		layout->setGrowCrossAxis(true);
+		layout->setCrossAxisOverflow(false);
+
+		m_fields->m_remapGroupsMenu->setLayout(layout);
+
+		m_mainLayer->addChild(m_fields->m_remapGroupsMenu);
+
+		handleTouchPriority(this);
+
+		return true;
+	}
+
+	CCMenuItemSpriteExtra* createButton(int id, int remap, bool notShared) {
+
+	}
+
+	void setupGroupData(EffectGameObject* effectObj, std::map<std::pair<int, int>, bool>& groupMap, bool alwaysShared) {
+		for (ChanceObject obj : static_cast<SpawnTriggerGameObject*>(effectObj)->m_remapObjects) {
+			std::pair<int, int> data = {obj.m_oldGroupID, obj.m_chance};
+			if (alwaysShared) {
+				groupMap[data] = true;
+			}
+			else {
+				if (groupMap.contains(data)) groupMap[data] = true;
+				else groupMap[data] = false;
+			}
+		}
+	}
+
+    void updateRemapButtons(float p0) {
+		SetupSpawnPopup::updateRemapButtons(p0);
+
+		m_fields->m_remapGroupsMenu->removeAllChildren();
+		for (CCMenuItemSpriteExtra* btn : CCArrayExt<CCMenuItemSpriteExtra*>(m_remapButtons)) {
+			btn->removeFromParentAndCleanup(false);
+			m_fields->m_remapGroupsMenu->addChild(btn);
+		}
+
+		std::map<std::pair<int, int>, bool> groups;
+
+		if (m_gameObjects && m_gameObjects->count() > 1) {
+			for (EffectGameObject* obj : CCArrayExt<EffectGameObject*>(m_gameObjects)) {
+				setupGroupData(obj, groups, false);
+			}
+		}
+		else if (m_gameObject) {
+			setupGroupData(m_gameObject, groups, true);
+		}
+
+		for (auto [k, v] : groups) {
+			log::info("group ID: {}, remap: {}, shared: {}", k.first, k.second, v);
+		}
+		
+		m_fields->m_remapGroupsMenu->updateLayout();
+	}
+};*/
+
 
 class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 
