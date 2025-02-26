@@ -7,7 +7,7 @@
 	},
 	"id": "alphalaneous.improved_group_view",
 	"name": "Improved Group View",
-	"version": "v1.0.10",
+	"version": "v1.0.11",
 	"developer": "Alphalaneous",
 	"description": "Allows more than 20 groups to show in the groups menu!",
 	"links": {
@@ -20,7 +20,12 @@
             "id": "geode.node-ids",
             "version": ">=v1.14.0",
             "importance": "required"
-        }
+        },
+		{
+			"id": "spaghettdev.named-editor-groups",
+            "version": ">=v1.0.2",
+            "importance": "suggested"
+		}
     ],
 	"settings": {
 		"left-align": {

@@ -4,8 +4,28 @@
 #include <Geode/modify/SetupRandAdvTriggerPopup.hpp>
 #include <Geode/modify/SetupSequenceTriggerPopup.hpp>
 #include <Geode/modify/SetupSpawnPopup.hpp>
+#define NAMED_EDITOR_GROUPS_USE_EVENTS_API
+#include <spaghettdev.named-editor-groups/api/NIDManager.hpp>
 
 using namespace geode::prelude;
+
+std::string getNameForID(NID nid, short id) {
+    std::string result;
+    NIDManager::event::EventGetNameForID("spaghettdev.named-editor-groups/v1/get-name-for-id", &result, nid, id).post();
+    return result;
+}
+
+short getIDForNameFor(NID nid, std::string name) {
+    short result;
+    NIDManager::event::EventGetIDForName("spaghettdev.named-editor-groups/v1/get-id-for-name", &result, nid, name).post();
+    return result;
+}
+
+std::unordered_map<std::string, short> getNamedIDs(NID nid) {
+    std::unordered_map<std::string, short> result;
+    NIDManager::event::EventGetNamedIDs("spaghettdev.named-editor-groups/v1/get-named-ids", &result, nid).post();
+    return result;
+}
 
 class LimitedCCMenu : public CCMenu {
 
@@ -155,7 +175,17 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 		Ref<CCMenu> m_currentMenu;
 		int m_lastRemoved = 0;
 		float m_scrollPos = INT_MIN;
+		std::unordered_map<std::string, short> m_namedIDs;
 	};
+
+	void checkNamedIDs(float dt) {
+		auto fields = m_fields.self();
+		std::unordered_map<std::string, short> namedIDs = getNamedIDs(NID::GROUP);
+		if (namedIDs != fields->m_namedIDs) {
+			fields->m_namedIDs = namedIDs;
+			regenerateGroupView();
+		}
+	}
 
     bool init(GameObject* obj, cocos2d::CCArray* objs) {
 		if (!SetGroupIDLayer::init(obj, objs)) {
@@ -197,8 +227,11 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 			}
 		}
 
-
+		if (Loader::get()->isModLoaded("spaghettdev.named-editor-groups")) {
+			schedule(schedule_selector(MySetGroupIDLayer::checkNamedIDs));
+		}
 		regenerateGroupView();
+
 		return true;
 	}
 
@@ -268,6 +301,7 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 		groupsMenu->setLayout(layout);
 
 		m_fields->m_lastRemoved = 0;
+		bool isNamed = Loader::get()->isModLoaded("spaghettdev.named-editor-groups");
 
 		for (auto [k, v] : allGroups) {
 			bool isParent = allParentGroups.count(k);
@@ -278,7 +312,41 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 			if (!isAlwaysPresent) texture = "GJ_button_05.png";
 			if (isParent) texture = "GJ_button_03.png";
 
+			std::string name = "";
+			if (isNamed) {
+				name = getNameForID(NID::GROUP, k);
+			}
+
 			ButtonSprite* bspr = ButtonSprite::create(fmt::format("{}", k).c_str(), 30, true, "goldFont.fnt", texture.c_str(), 20, 0.5);
+
+			float width = 46;
+
+			CCLabelBMFont* nameLabel = CCLabelBMFont::create(name.c_str(), "bigFont.fnt");
+			nameLabel->setScale(0.5);
+
+			if (!name.empty()) {
+				bspr->m_label->setAnchorPoint({0.f, 0.5f});
+				bspr->m_label->setPositionX(10);
+				CCSize idLabelSize = bspr->m_label->getScaledContentSize();
+				CCPoint idLabelPos = bspr->m_label->getPosition();
+				nameLabel->setAnchorPoint({0.f, 0.5f});
+				nameLabel->limitLabelWidth(70.f, .5, .1);
+				width = nameLabel->getScaledContentWidth() + 25 + bspr->m_label->getScaledContentWidth();
+				nameLabel->setPosition({bspr->m_label->getPositionX() + bspr->m_label->getScaledContentWidth() + 5.f, bspr->m_label->getPositionY()});
+				bspr->addChild(nameLabel);
+
+				auto background = CCSprite::create("square02b_001.png");
+				background->setScaleX(idLabelSize.width / background->getScaledContentWidth() + .05f);
+				background->setScaleY(idLabelSize.height / background->getScaledContentHeight() - .02f);
+				background->setColor({0, 0, 0});
+				background->setOpacity(100);
+				background->setPosition({idLabelPos.x + idLabelSize.width/2, idLabelPos.y - 1.5f });
+				bspr->addChild(background);
+			}
+
+			bspr->m_BGSprite->setContentSize({width, bspr->m_BGSprite->getContentHeight()});
+			bspr->setContentSize(bspr->m_BGSprite->getScaledContentSize());
+			bspr->m_BGSprite->setPosition(bspr->getContentSize()/2);
 
 			CCMenuItemSpriteExtra* button = CCMenuItemSpriteExtra::create(bspr, this, menu_selector(MySetGroupIDLayer::onRemoveFromGroup2));
 			
@@ -290,11 +358,11 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 
 		if (groupsMenu->getChildrenCount() <= 10) {
 			groupsMenu->setScale(1.f);
-			contentSize = CCSize{278, 50};
+			contentSize = CCSize{278, 67};
 		}
 		else {
 			groupsMenu->setScale(0.85f);
-			contentSize = CCSize{395, 50};
+			contentSize = CCSize{395, 67};
 		}
 
 		float padding = 7.5;
@@ -334,7 +402,7 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 			m_fields->m_scrollLayer->m_contentLayer->setPositionY(pos);
 		}
 
-		if (groupsMenu->getChildrenCount() <= 14) {
+		if (menuContainer->getScaledContentHeight() <= 67) {
 			m_fields->m_scrollLayer->m_disableMovement = true;
 			m_fields->m_scrollLayer->enableScrollWheel(false);
 		}

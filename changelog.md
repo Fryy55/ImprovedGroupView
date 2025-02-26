@@ -1,3 +1,6 @@
+# 1.0.11
+- Named Editor Groups Support
+
 # 1.0.10
 - Add tags
 
