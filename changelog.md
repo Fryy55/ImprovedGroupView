@@ -1,3 +1,6 @@
+# 1.0.12
+- Hook prio before Named Editor Groups
+
 # 1.0.11
 - Named Editor Groups Support
 
