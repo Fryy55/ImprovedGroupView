@@ -1,3 +1,6 @@
+# 1.0.13
+- iOS support
+
 # 1.0.12
 - Hook prio before Named Editor Groups
 
