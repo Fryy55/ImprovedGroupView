@@ -11,19 +11,20 @@ using namespace geode::prelude;
 
 std::string getNameForID(NID nid, short id) {
     std::string result;
-    NIDManager::event::EventGetNameForID("spaghettdev.named-editor-groups/v1/get-name-for-id", &result, nid, id).post();
+    NIDManager::event::EventGetNameForID("spaghettdev.named-editor-groups/v2/get-name-for-id", &result, nid, id).post();
+    log::info("name: {} id: {} NID: {}", result, id, (int)nid);
     return result;
 }
 
 short getIDForNameFor(NID nid, std::string name) {
     short result;
-    NIDManager::event::EventGetIDForName("spaghettdev.named-editor-groups/v1/get-id-for-name", &result, nid, name).post();
+    NIDManager::event::EventGetIDForName("spaghettdev.named-editor-groups/v2/get-id-for-name", &result, nid, name).post();
     return result;
 }
 
 std::unordered_map<std::string, short> getNamedIDs(NID nid) {
     std::unordered_map<std::string, short> result;
-    NIDManager::event::EventGetNamedIDs("spaghettdev.named-editor-groups/v1/get-named-ids", &result, nid).post();
+    NIDManager::event::EventGetNamedIDs("spaghettdev.named-editor-groups/v2/get-named-ids", &result, nid).post();
     return result;
 }
 
@@ -95,29 +96,46 @@ class $modify(SetupSpawnPopup) {
 
     bool init(EffectGameObject* p0, cocos2d::CCArray* p1) {
 
-        m_fields->m_remapGroupsMenu = CCMenu::create();
+        auto fields = m_fields.self();
+
+        fields->m_remapGroupsMenu = CCMenu::create();
 
         if (!SetupSpawnPopup::init(p0, p1)) return false;
 
-        
-        m_fields->m_remapGroupsMenu->setID("remap-groups-menu"_spr);
-        m_fields->m_remapGroupsMenu->setContentSize({340, 85});
+        fields->m_remapGroupsMenu->setID("remap-groups-menu"_spr);
+        fields->m_remapGroupsMenu->setContentSize({340, 85});
 
         RowLayout* layout = RowLayout::create();
         layout->setGrowCrossAxis(true);
         layout->setCrossAxisOverflow(false);
 
-        m_fields->m_remapGroupsMenu->setLayout(layout);
+        fields->m_remapGroupsMenu->setLayout(layout);
 
-        m_mainLayer->addChild(m_fields->m_remapGroupsMenu);
+        m_mainLayer->addChild(fields->m_remapGroupsMenu);
 
         handleTouchPriority(this);
 
         return true;
     }
 
-    CCMenuItemSpriteExtra* createButton(int id, int remap, bool notShared) {
+    CCMenuItemSpriteExtra* createButton(int id, int remap, bool shared) {
 
+        std::string texture = "GJ_button_04.png";
+        if (shared) texture = "GJ_button_05.png";
+
+        ButtonSprite* bspr = ButtonSprite::create(fmt::format("{}\n{}", id, remap).c_str(), 56, true, "goldFont.fnt", texture.c_str(), 30, 0.5);
+        
+        float width = 46;
+
+        bspr->m_BGSprite->setContentSize({width, bspr->m_BGSprite->getContentHeight()});
+        bspr->setContentSize(bspr->m_BGSprite->getScaledContentSize());
+        bspr->m_BGSprite->setPosition(bspr->getContentSize()/2);
+
+        CCMenuItemSpriteExtra* button = CCMenuItemSpriteExtra::create(bspr, this, menu_selector(SetupSpawnPopup::onSelectRemap));
+            
+        //button->setTag(k);
+        
+        return button;
     }
 
     void setupGroupData(EffectGameObject* effectObj, std::map<std::pair<int, int>, bool>& groupMap, bool alwaysShared) {
@@ -134,12 +152,14 @@ class $modify(SetupSpawnPopup) {
     }
 
     void updateRemapButtons(float p0) {
-        SetupSpawnPopup::updateRemapButtons(p0);
+        SetupSpawnPopup::updateRemapButtons(p0);\
+        
+        auto fields = m_fields.self();
 
-        m_fields->m_remapGroupsMenu->removeAllChildren();
+        fields->m_remapGroupsMenu->removeAllChildren();
         for (CCMenuItemSpriteExtra* btn : CCArrayExt<CCMenuItemSpriteExtra*>(m_remapButtons)) {
             btn->removeFromParentAndCleanup(false);
-            m_fields->m_remapGroupsMenu->addChild(btn);
+            //fields->m_remapGroupsMenu->addChild(btn);
         }
 
         std::map<std::pair<int, int>, bool> groups;
@@ -155,12 +175,12 @@ class $modify(SetupSpawnPopup) {
 
         for (auto [k, v] : groups) {
             log::info("group ID: {}, remap: {}, shared: {}", k.first, k.second, v);
+            fields->m_remapGroupsMenu->addChild(createButton(k.first, k.second, v));
         }
         
-        m_fields->m_remapGroupsMenu->updateLayout();
+        fields->m_remapGroupsMenu->updateLayout();
     }
 };*/
-
 
 class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 
@@ -271,7 +291,7 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
             }
         }
 
-        for(GroupData data : groupData) {
+        for (GroupData data : groupData) {
             for (int group : data.groups) {
                 allGroups[group]++;
             }
