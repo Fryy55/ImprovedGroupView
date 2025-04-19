@@ -461,15 +461,15 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
         log::info("got here 9");
 
         handleTouchPriority(this);
+        log::info("got here 10");
 
-        queueInMainThread([this, fields] {
+        /*queueInMainThread([this, fields] {
             if (auto delegate = typeinfo_cast<CCTouchDelegate*>(fields->m_scrollLayer.data())) {
                 if (auto handler = CCTouchDispatcher::get()->findHandler(delegate)) {
                     CCTouchDispatcher::get()->setPriority(handler->getPriority() - 1, handler->getDelegate());
                 }
             }
-        });
-        log::info("got here 10");
+        });*/
 
     }
 
