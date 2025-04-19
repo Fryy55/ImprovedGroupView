@@ -1,3 +1,9 @@
+# 1.0.15
+- iOS bugfix
+
+# 1.0.14
+- Named Editor Groups API bump
+
 # 1.0.13
 - iOS support
 
