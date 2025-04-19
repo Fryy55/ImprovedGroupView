@@ -276,7 +276,10 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
     }
 
     void regenerateGroupView() {
-        if (m_fields->m_scrollLayer) m_fields->m_scrollLayer->removeFromParent();
+        log::info("got here 1");
+        auto fields = m_fields.self();
+
+        if (fields->m_scrollLayer) fields->m_scrollLayer->removeFromParent();
 
         std::vector<GroupData> groupData;
         std::map<int, int> allGroups;
@@ -290,6 +293,7 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
                 groupData.push_back(parseObjGroups(obj));
             }
         }
+        log::info("got here 2");
 
         for (GroupData data : groupData) {
             for (int group : data.groups) {
@@ -303,12 +307,13 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
         allGroups.erase(0);
         allParentGroups.erase(0);
 
-        if (allParentGroups.count(m_fields->m_lastRemoved)) {
-            allParentGroups.erase(m_fields->m_lastRemoved);
+        if (allParentGroups.count(fields->m_lastRemoved)) {
+            allParentGroups.erase(fields->m_lastRemoved);
         }
         else {
-            allGroups.erase(m_fields->m_lastRemoved);
+            allGroups.erase(fields->m_lastRemoved);
         }
+        log::info("got here 3");
 
         CCNode* menuContainer = CCNode::create();
         LimitedCCMenu* groupsMenu = LimitedCCMenu::create();
@@ -321,10 +326,11 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
         if (Mod::get()->getSettingValue<bool>("left-align")) {
             layout->setAxisAlignment(AxisAlignment::Start);
         }
+        log::info("got here 4");
 
         groupsMenu->setLayout(layout);
 
-        m_fields->m_lastRemoved = 0;
+        fields->m_lastRemoved = 0;
         bool isNamed = Loader::get()->isModLoaded("spaghettdev.named-editor-groups");
 
         for (auto [k, v] : allGroups) {
@@ -379,6 +385,7 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
             groupsMenu->addChild(button);
         }
         CCSize contentSize;
+        log::info("got here 5");
 
         if (groupsMenu->getChildrenCount() <= 10) {
             groupsMenu->setScale(1.f);
@@ -395,8 +402,9 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
         groupsMenu->setPosition({360/2, padding});
         groupsMenu->setAnchorPoint({0.5, 0});
         groupsMenu->updateLayout();
+        log::info("got here 6");
 
-        m_fields->m_currentMenu = groupsMenu;
+        fields->m_currentMenu = groupsMenu;
         menuContainer->setContentSize({360, groupsMenu->getScaledContentSize().height + padding * 2});
         menuContainer->setAnchorPoint({0.5, 0});
         menuContainer->setPosition({360/2, 0});
@@ -404,32 +412,34 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
 
         CCSize winSize = CCDirector::get()->getWinSize();
 
-        m_fields->m_scrollLayer = ScrollLayer::create({360, menuContainer->getScaledContentSize().height});
-        m_fields->m_scrollLayer->setContentSize({360, 68});
-        m_fields->m_scrollLayer->setPosition({winSize.width/2, winSize.height/2 - 16.8f});
-        m_fields->m_scrollLayer->ignoreAnchorPointForPosition(false);
-        m_fields->m_scrollLayer->m_contentLayer->addChild(menuContainer);
-        m_fields->m_scrollLayer->setID("groups-list-menu-scroll"_spr);
-        groupsMenu->m_scrollLayer = m_fields->m_scrollLayer;
+        fields->m_scrollLayer = ScrollLayer::create({360, menuContainer->getScaledContentSize().height});
+        fields->m_scrollLayer->setContentSize({360, 68});
+        fields->m_scrollLayer->setPosition({winSize.width/2, winSize.height/2 - 16.8f});
+        fields->m_scrollLayer->ignoreAnchorPointForPosition(false);
+        fields->m_scrollLayer->m_contentLayer->addChild(menuContainer);
+        fields->m_scrollLayer->setID("groups-list-menu-scroll"_spr);
+        groupsMenu->m_scrollLayer = fields->m_scrollLayer;
+        log::info("got here 7");
 
-        m_mainLayer->addChild(m_fields->m_scrollLayer);
-        if (m_fields->m_scrollPos == INT_MIN) {
-            m_fields->m_scrollLayer->scrollToTop();
+        m_mainLayer->addChild(fields->m_scrollLayer);
+        if (fields->m_scrollPos == INT_MIN) {
+            fields->m_scrollLayer->scrollToTop();
         }
         else {
-            float minY = -(m_fields->m_scrollLayer->m_contentLayer->getContentSize().height - m_fields->m_scrollLayer->getContentSize().height);
-            float pos = m_fields->m_scrollPos;
+            float minY = -(fields->m_scrollLayer->m_contentLayer->getContentSize().height - fields->m_scrollLayer->getContentSize().height);
+            float pos = fields->m_scrollPos;
 
-            if (m_fields->m_scrollPos < minY) pos = minY;
-            if (m_fields->m_scrollPos > 0) pos = 0;
+            if (fields->m_scrollPos < minY) pos = minY;
+            if (fields->m_scrollPos > 0) pos = 0;
 
-            m_fields->m_scrollLayer->m_contentLayer->setPositionY(pos);
+            fields->m_scrollLayer->m_contentLayer->setPositionY(pos);
         }
 
         if (menuContainer->getScaledContentHeight() <= 67) {
-            m_fields->m_scrollLayer->m_disableMovement = true;
-            m_fields->m_scrollLayer->enableScrollWheel(false);
+            fields->m_scrollLayer->m_disableMovement = true;
+            fields->m_scrollLayer->enableScrollWheel(false);
         }
+        log::info("got here 8");
 
         m_mainLayer->removeChildByID("group-count"_spr);
 
@@ -448,16 +458,19 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
         groupCountLabel->setOpacity(200);
         groupCountLabel->setScale(0.5f);
         m_mainLayer->addChild(groupCountLabel);
+        log::info("got here 9");
 
         handleTouchPriority(this);
 
-        queueInMainThread([this] {
-            if (auto delegate = typeinfo_cast<CCTouchDelegate*>(m_fields->m_scrollLayer.data())) {
+        queueInMainThread([this, fields] {
+            if (auto delegate = typeinfo_cast<CCTouchDelegate*>(fields->m_scrollLayer.data())) {
                 if (auto handler = CCTouchDispatcher::get()->findHandler(delegate)) {
                     CCTouchDispatcher::get()->setPriority(handler->getPriority() - 1, handler->getDelegate());
                 }
             }
         });
+        log::info("got here 10");
+
     }
 
     GroupData parseObjGroups(GameObject* obj) {
