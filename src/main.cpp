@@ -285,7 +285,9 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
         std::map<int, int> allParentGroups;
 
         if (!m_targetObjects || m_targetObjects->count() == 0) {
-            groupData.push_back(parseObjGroups(m_targetObject));
+            if (m_targetObject) {
+                groupData.push_back(parseObjGroups(m_targetObject));
+            }
         }
         else {
             for (GameObject* obj : CCArrayExt<GameObject*>(m_targetObjects)) {

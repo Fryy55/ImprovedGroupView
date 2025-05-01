@@ -1,3 +1,6 @@
+# 1.0.16
+- Fix a crash
+
 # 1.0.15
 - iOS bugfix
 
