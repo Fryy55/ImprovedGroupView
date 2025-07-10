@@ -473,7 +473,7 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
         int uuid = obj->m_uniqueID;
         std::vector<int> parents;
 
-        for (auto [k, v] : CCDictionaryExt<int, CCArray*>(lel->m_unknownE40)) {
+        for (auto [k, v] : CCDictionaryExt<int, CCArray*>(lel->m_parentGroupIDs)) {
             if (k == uuid) {
                 for (auto val : CCArrayExt<CCInteger*>(v)) {
                     parents.push_back(val->getValue());

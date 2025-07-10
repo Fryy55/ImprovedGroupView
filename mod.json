@@ -1,5 +1,5 @@
 {
-	"geode": "4.3.1",
+	"geode": "4.6.3",
 	"gd": {
 		"win": "2.2074",
 		"android": "2.2074",
@@ -30,6 +30,7 @@
     ],
 	"settings": {
 		"left-align": {
+			
             "name": "Left Align Groups",
 			"description": "Align groups to the left like vanilla GD",
             "type": "bool",
