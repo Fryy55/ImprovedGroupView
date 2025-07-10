@@ -28,6 +28,11 @@
             "importance": "suggested"
 		}
     ],
+	"api": {
+		"include": [
+			"api/*.hpp"
+		]
+	},
 	"settings": {
 		"left-align": {
 			
@@ -38,6 +43,6 @@
         }
 	},
 	"tags": [
-		"editor", "enhancement"
+		"editor", "enhancement", "api"
 	]
 }

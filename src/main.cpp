@@ -1,4 +1,5 @@
 #include <Geode/Geode.hpp>
+#include "../api/GroupViewUpdateEvent.hpp"
 #include <Geode/modify/SetGroupIDLayer.hpp>
 #include <Geode/modify/CCScrollLayerExt.hpp>
 #include <Geode/modify/SetupRandAdvTriggerPopup.hpp>
@@ -196,6 +197,8 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
         int m_lastRemoved = 0;
         float m_scrollPos = INT_MIN;
         std::unordered_map<std::string, short> m_namedIDs;
+
+        EventListener<EventFilter<GroupViewUpdateEvent>> m_apiListener;
     };
 
     static void onModify(auto& self) {
@@ -255,6 +258,13 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
             schedule(schedule_selector(MySetGroupIDLayer::checkNamedIDs));
         }
         regenerateGroupView();
+
+        m_fields->m_apiListener.bind([this](GroupViewUpdateEvent* event) {
+            regenerateGroupView();
+
+            return ListenerResult::Stop;
+        }
+        );
 
         return true;
     }
