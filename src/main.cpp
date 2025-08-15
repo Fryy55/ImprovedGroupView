@@ -198,7 +198,7 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
         float m_scrollPos = INT_MIN;
         std::unordered_map<std::string, short> m_namedIDs;
 
-        EventListener<EventFilter<GroupViewUpdateEvent>> m_apiListener;
+        EventListener<EventFilter<igv::GroupViewUpdateEvent>> m_apiListener;
     };
 
     static void onModify(auto& self) {
@@ -259,10 +259,10 @@ class $modify(MySetGroupIDLayer, SetGroupIDLayer) {
         }
         regenerateGroupView();
 
-        m_fields->m_apiListener.bind([this](GroupViewUpdateEvent* event) {
+        m_fields->m_apiListener.bind([this](igv::GroupViewUpdateEvent* event) {
             regenerateGroupView();
 
-            return ListenerResult::Stop;
+            return ListenerResult::Propagate;
         }
         );
 
